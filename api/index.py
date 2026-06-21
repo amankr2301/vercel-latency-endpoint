@@ -10,8 +10,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=False,
 )
 
 # Load the telemetry data once when the function starts
@@ -57,4 +58,4 @@ async def get_metrics(request: Request):
             "breaches": sum(1 for l in latencies if l > threshold),
         }
 
-    return result
+    return result 
