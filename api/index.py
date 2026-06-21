@@ -6,23 +6,20 @@ import math
 
 app = FastAPI()
 
-# Allow POST requests from any website (CORS)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-    allow_credentials=False,
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["Access-Control-Allow-Origin"],
 )
 
-# Load the telemetry data once when the function starts
 DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "q-vercel-latency.json")
 with open(DATA_PATH, "r") as f:
     telemetry = json.load(f)
 
 
 def percentile(values, pct):
-    """Compute the pct-th percentile of a list of numbers."""
     if not values:
         return None
     sorted_vals = sorted(values)
@@ -58,4 +55,4 @@ async def get_metrics(request: Request):
             "breaches": sum(1 for l in latencies if l > threshold),
         }
 
-    return result 
+    return {"regions": result}
